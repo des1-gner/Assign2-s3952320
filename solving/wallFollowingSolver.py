@@ -12,6 +12,7 @@ class WallFollowingMazeSolver(MazeSolver):
 
     def solveMaze(self, maze: Maze3D, entrance: Coordinates3D):
         self.m_solved = False
+        self.m_entranceUsed = entrance  # Update entrance used
 
         # Define the order of directions for rotation (right-hand rule)
         directions = [
@@ -57,8 +58,16 @@ class WallFollowingMazeSolver(MazeSolver):
             cols = maze.colNum(level)
             return (0 <= cell.getRow() < rows and 0 <= cell.getCol() < cols)
 
-        while current_cell not in maze.getExits():
+        while True:
             print(f"Current cell: {current_cell}, Direction index: {direction_index}")
+
+            # Check if current cell is an exit
+            if current_cell in maze.getExits():
+                self.solved(entrance, current_cell)
+                self.m_exitUsed = current_cell  # Update exit used
+                self.m_solved = True
+                print("Exit found!")
+                break
 
             # Check all primary directions (right, forward, left) in sequence
             left_direction_index = turn_left(direction_index)
@@ -125,13 +134,6 @@ class WallFollowingMazeSolver(MazeSolver):
                     self.solverPathAppend(current_cell, True)
                 else:
                     break
-
-            # Check if we have found the exit
-            if current_cell in maze.getExits():
-                self.solved(entrance, current_cell)
-                self.m_solved = True
-                print("Exit found!")
-                break
 
             print(f"Visited cells: {visited_cells}")
 
