@@ -2,7 +2,7 @@
     "levelSpecs": [[5,5],[5,5],[5,5]],
     "entrances": [[0,0,-1],[0,-1,1]],
     "exits": [[0,3,5],[0,5,4]],
-    "generator": "recur",
+    "generator": "wilson",
     "solver": "recur",
     "solverEntranceIndex": 1,
     "visualise": true
