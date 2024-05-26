@@ -73,6 +73,3 @@ class RecurBackMazeSolver(MazeSolver):
         # ensure we are currently at the exit
         if currCell in maze.getExits():
             self.solved(entrance, currCell)
-
-	
-

@@ -1,11 +1,4 @@
-# -------------------------------------------------------------------
-# PLEASE UPDATE THIS FILE.
-# Pledge maze solver.
-#
-# **author** = 'Jeffrey Chan'
-# **copyright** = 'Copyright 2024, RMIT University'
-# -------------------------------------------------------------------
-
+from typing import List, Tuple
 from maze.maze3D import Maze3D
 from solving.mazeSolver import MazeSolver
 from maze.util import Coordinates3D
@@ -26,12 +19,12 @@ class PledgeMazeSolver(MazeSolver):
 
         # Define directions: North, Up (North-East), East, South, Down (South-West), West
         directions = [
-            Coordinates3D(0, -1, 0),  # North
-            Coordinates3D(1, 0, 0),   # Up
-            Coordinates3D(0, 0, 1),   # East
-            Coordinates3D(0, 1, 0),   # South
-            Coordinates3D(-1, 0, 0),  # Down
-            Coordinates3D(0, 0, -1)   # West
+            Coordinates3D(0, 1, 0),   # North
+            Coordinates3D(0, 0, 1),   # Up
+            Coordinates3D(1, 0, 0),   # East
+            Coordinates3D(0, -1, 0),  # South
+            Coordinates3D(0, 0, -1),  # Down
+            Coordinates3D(-1, 0, 0)   # West
         ]
 
         # Choose initial direction randomly
@@ -39,6 +32,10 @@ class PledgeMazeSolver(MazeSolver):
         direction_index = initial_direction_index
         angle = 0
         current_cell = entrance
+
+        # Set to track visited cells
+        visited_cells = set()
+        visited_cells.add(current_cell)
 
         self.solverPathAppend(current_cell, False)
 
@@ -48,52 +45,58 @@ class PledgeMazeSolver(MazeSolver):
                 self.solved(entrance, current_cell)
                 return
 
-            # Attempt to move in the current direction
-            next_cell = Coordinates3D(
-                current_cell.getLevel() + directions[direction_index].getLevel(),
-                current_cell.getRow() + directions[direction_index].getRow(),
-                current_cell.getCol() + directions[direction_index].getCol()
-            )
+            # Attempt to move in the current direction until hitting a wall or finding the exit
+            while True:
+                next_cell = Coordinates3D(
+                    current_cell.getRow() + directions[direction_index].getRow(),
+                    current_cell.getCol() + directions[direction_index].getCol(),
+                    current_cell.getLevel() + directions[direction_index].getLevel()
+                )
 
-            if maze.hasCell(next_cell) and not maze.hasWall(current_cell, next_cell):
-                # Move to the next cell
-                current_cell = next_cell
-                self.solverPathAppend(current_cell, False)
-                # Reset angle if we are moving in the initial direction
-                if direction_index == initial_direction_index:
-                    angle = 0
-            else:
-                # Start wall-following
-                while maze.hasWall(current_cell, next_cell) or not maze.hasCell(next_cell):
-                    old_direction_index = direction_index
-                    direction_index = (direction_index + 1) % len(directions)
-                    angle += 60 if direction_index == (old_direction_index + 1) % len(directions) else -60
-
-                    next_cell = Coordinates3D(
-                        current_cell.getLevel() + directions[direction_index].getLevel(),
-                        current_cell.getRow() + directions[direction_index].getRow(),
-                        current_cell.getCol() + directions[direction_index].getCol()
-                    )
-
-                    # Check if we need to stop wall-following
-                    if angle == 0:
-                        break
-
-                # Move to the next cell after adjusting direction
-                if maze.hasCell(next_cell) and not maze.hasWall(current_cell, next_cell):
+                if maze.hasCell(next_cell) and not maze.hasWall(current_cell, next_cell) and next_cell not in visited_cells:
+                    # Move to the next cell
                     current_cell = next_cell
                     self.solverPathAppend(current_cell, False)
-                else:
-                    # If still stuck, backtrack
-                    if len(self.m_solverPath) > 1:
-                        self.solverPathAppend(current_cell, True)
-                        current_cell = self.m_solverPath[-2]  # Backtrack
-                    else:
-                        # No solution found
-                        self.m_solved = False
+                    visited_cells.add(current_cell)
+                    if current_cell in maze.getExits():
+                        self.m_solved = True
+                        self.solved(entrance, current_cell)
                         return
+                else:
+                    # Start wall-following
+                    while True:
+                        old_direction_index = direction_index
+                        direction_index = (direction_index + 1) % len(directions)
+                        angle += 60 if direction_index == (old_direction_index + 1) % len(directions) else -60
 
-            # Restore initial direction when angle is zero
-            if angle == 0:
-                direction_index = initial_direction_index
+                        next_cell = Coordinates3D(
+                            current_cell.getRow() + directions[direction_index].getRow(),
+                            current_cell.getCol() + directions[direction_index].getCol(),
+                            current_cell.getLevel() + directions[direction_index].getLevel()
+                        )
+
+                        if angle == 0:
+                            break
+
+                        # Check if we can move to the next cell
+                        if maze.hasCell(next_cell) and not maze.hasWall(current_cell, next_cell) and next_cell not in visited_cells:
+                            current_cell = next_cell
+                            self.solverPathAppend(current_cell, False)
+                            visited_cells.add(current_cell)
+                            break
+                        else:
+                            # If we can't move, check if there's a previous cell to backtrack to
+                            if len(self.m_solverPath) > 1:
+                                self.solverPathAppend(current_cell, True)
+                                current_cell = self.m_solverPath[-2][0]  # Backtrack
+                                visited_cells.add(current_cell)
+                            else:
+                                # No solution found
+                                self.m_solved = False
+                                return
+
+                    # Restore initial direction when angle is zero
+                    if angle == 0:
+                        direction_index = initial_direction_index
+                        break
 
