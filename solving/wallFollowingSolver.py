@@ -4,7 +4,7 @@ from maze.util import Coordinates3D
 
 class WallFollowingMazeSolver(MazeSolver):
     """
-    Improved wall following solver for 3D mazes with better backtracking.
+    Wall following solver for 3D mazes that marks the exit upon reaching it.
     """
     def __init__(self):
         super().__init__()
@@ -21,39 +21,42 @@ class WallFollowingMazeSolver(MazeSolver):
         ]
 
         current_cell = entrance
-        current_dir_index = 0  # Assume starting facing South
+        current_dir_index = 0  # Start facing South
         visited = set()
         path = [current_cell]
 
-        while current_cell not in maze.getExits():
+        while True:
             visited.add(current_cell)
             self.solverPathAppend(current_cell, False)
-            print(f"Current Cell: {current_cell}, Facing Direction Index: {current_dir_index}")
+
+            if current_cell in maze.getExits():
+                # Mark the current cell as the exit point and finalize the path
+                self.solverPathAppend(current_cell, True)
+                break
 
             found_path = False
             attempts = 0
             while attempts < len(directions):
                 next_dir = directions[current_dir_index]
                 next_cell = current_cell + next_dir
-                print(f"Trying Direction: {next_dir} -> Next Cell: {next_cell}")
 
-                if not maze.hasWall(current_cell, next_cell) and next_cell not in visited and maze.hasCell(next_cell):
+                # Check if the next cell is an exit or a valid step
+                if (next_cell in maze.getExits() or 
+                    (not maze.hasWall(current_cell, next_cell) and next_cell not in visited and maze.hasCell(next_cell))):
                     current_cell = next_cell
                     path.append(current_cell)
                     found_path = True
-                    print(f"Moving to: {next_cell}")
                     break
                 else:
                     current_dir_index = (current_dir_index + 1) % len(directions)
                     attempts += 1
 
             if not found_path:
-                print("Backtracking")
                 path.pop()  # Remove current position
                 if path:
                     current_cell = path[-1]
                 self.solverPathAppend(current_cell, True)
 
         self.solved(entrance, current_cell)
-        print(f"Reached Exit: {current_cell}")
+
 
