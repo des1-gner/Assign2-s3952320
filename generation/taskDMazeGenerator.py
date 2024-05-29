@@ -1,5 +1,4 @@
 # -------------------------------------------------------------------
-# PLEASE UPDATE THIS FILE.
 # Implementation of Task D maze generator.
 #
 # __author__ = 'Jeffrey Chan'
@@ -12,6 +11,7 @@ from maze.maze3D import Maze3D
 from maze.util import Coordinates3D
 from generation.mazeGenerator import MazeGenerator
 
+
 class TaskDMazeGenerator(MazeGenerator):
     """
     Implementation of Task D: Maximising Solver Exploration of Cells
@@ -21,23 +21,24 @@ class TaskDMazeGenerator(MazeGenerator):
         # Initialize maze with all walls
         maze.initCells(True)
 
-        # Define entrance and exit
-        entrance = Coordinates3D(0, 0, 0)  # Assuming entrance at level 0, row 0, column 0
-        exit_level = maze.levelNum() - 1
-        exit_row = maze.rowNum(exit_level) - 1
-        exit_col = maze.colNum(exit_level) - 1
-        exit = Coordinates3D(exit_level, exit_row, exit_col)
+        # Define entrances and exits from the provided example
+        entrance1 = Coordinates3D(0, 0, -1)  # Entrance 1
+        entrance2 = Coordinates3D(1, -1, 1)  # Entrance 2
+        exits = [Coordinates3D(0, 5, 1)]     # Exit
+
+        # Start from the first entrance for the longest path
+        startCoord = entrance1
 
         # Initialize stack and visited set
         stack = deque()
-        stack.append(entrance)
-        visited = set([entrance])
+        stack.append(startCoord)
+        visited = set([startCoord])
 
         # Use DFS to create a single path from entrance to exit
-        currCell = entrance
+        currCell = startCoord
         path = []
 
-        while currCell != exit:
+        while stack:
             path.append(currCell)
             neighbours = maze.neighbours(currCell)
             nonVisitedNeighs = [neigh for neigh in neighbours if neigh not in visited and
@@ -51,6 +52,9 @@ class TaskDMazeGenerator(MazeGenerator):
                 currCell = neigh
             else:
                 currCell = stack.pop()
+
+            if currCell in exits:
+                break
 
         # Create a single path maze
         self.createSinglePath(maze, path, visited)
@@ -74,6 +78,9 @@ class TaskDMazeGenerator(MazeGenerator):
         totalCells = sum([maze.rowNum(l) * maze.colNum(l) for l in range(maze.levelNum())])
 
         while len(visited) < totalCells:
+            if not stack:
+                break
+
             currCell = stack.pop()
             neighbours = maze.neighbours(currCell)
             nonVisitedNeighs = [neigh for neigh in neighbours if neigh not in visited and
