@@ -24,8 +24,7 @@ class PledgeMazeSolver(MazeSolver):
         ]
 
         current_cell = entrance
-        initial_direction_index = random.randint(0, len(directions) - 1)
-        current_direction_index = initial_direction_index
+        current_direction_index = 0  # Start with a fixed direction (South)
         angle = 0
         visited = set()
         path = [current_cell]
@@ -42,53 +41,35 @@ class PledgeMazeSolver(MazeSolver):
                 self.solverPathAppend(current_cell, True)
                 break
 
-            while True:
-                next_cell = current_cell + directions[current_direction_index]
+            next_cell = current_cell + directions[current_direction_index]
 
-                if is_within_bounds(next_cell) and not maze.hasWall(current_cell, next_cell) and next_cell not in visited:
-                    current_cell = next_cell
-                    path.append(current_cell)
-                    if is_within_bounds(current_cell):
-                        visited.add(current_cell)
-                        self.solverPathAppend(current_cell, False)
-                    if current_cell in maze.getExits():
-                        self.solverPathAppend(current_cell, True)
-                        return
-                else:
-                    break
-
-            found_path = False
-            while not found_path:
+            if is_within_bounds(next_cell) and not maze.hasWall(current_cell, next_cell) and next_cell not in visited:
+                current_cell = next_cell
+                path.append(current_cell)
+                visited.add(current_cell)
+                self.solverPathAppend(current_cell, False)
+                angle = 0  # Reset angle when a valid move is found
+            else:
+                found_path = False
                 for _ in range(len(directions)):
+                    current_direction_index = (current_direction_index + 1) % len(directions)
                     next_cell = current_cell + directions[current_direction_index]
 
                     if is_within_bounds(next_cell) and not maze.hasWall(current_cell, next_cell) and next_cell not in visited:
                         current_cell = next_cell
                         path.append(current_cell)
-                        if is_within_bounds(current_cell):
-                            visited.add(current_cell)
-                            self.solverPathAppend(current_cell, False)
+                        visited.add(current_cell)
+                        self.solverPathAppend(current_cell, False)
                         found_path = True
                         break
+
+                if not found_path:
+                    if len(path) > 1:
+                        path.pop()
+                        current_cell = path[-1]
                     else:
-                        old_direction_index = current_direction_index
-                        current_direction_index = (current_direction_index + 1) % len(directions)
-                        if current_direction_index == (old_direction_index + 1) % len(directions):
-                            angle += 60
-                        else:
-                            angle -= 60
-
-                if angle == 0:
-                    current_direction_index = initial_direction_index
-                    break
-
-                if not found_path and len(path) > 1:
-                    current_cell = path[-2]
-                    path.pop()
-
-            if not found_path and len(path) <= 1:
-                self.m_solved = False
-                return
+                        self.m_solved = False
+                        return
 
         self.solved(entrance, current_cell)
 
