@@ -11,6 +11,7 @@ class WallFollowingMazeSolver(MazeSolver):
         self.m_name = "wall"
 
     def solveMaze(self, maze: Maze3D, entrance: Coordinates3D):
+        # Directions corresponding to [South, East, North, West, Up, Down]
         directions = [
             Coordinates3D(0, 1, 0),   # South
             Coordinates3D(0, 0, 1),   # East
@@ -20,8 +21,23 @@ class WallFollowingMazeSolver(MazeSolver):
             Coordinates3D(-1, 0, 0)   # Down (to previous level)
         ]
 
+        def right_wall_dirs(current_dir):
+            # Returns direction order based on current direction
+            if current_dir == Coordinates3D(0, 1, 0):   # South
+                return [1, 0, 3, 2, 4, 5]  # East, South, West, North, Up, Down
+            elif current_dir == Coordinates3D(0, 0, 1):  # East
+                return [0, 1, 2, 3, 4, 5]  # South, East, North, West, Up, Down
+            elif current_dir == Coordinates3D(0, -1, 0): # North
+                return [3, 2, 1, 0, 4, 5]  # West, North, East, South, Up, Down
+            elif current_dir == Coordinates3D(0, 0, -1): # West
+                return [2, 3, 0, 1, 4, 5]  # North, West, South, East, Up, Down
+            elif current_dir == Coordinates3D(1, 0, 0):  # Up
+                return [0, 1, 2, 3, 4, 5]  # South, East, North, West, Up, Down
+            elif current_dir == Coordinates3D(-1, 0, 0): # Down
+                return [0, 1, 2, 3, 5, 4]  # South, East, North, West, Down, Up
+
         current_cell = entrance
-        current_dir_index = 0  # Start facing South
+        current_dir = Coordinates3D(0, 1, 0)  # Start facing South
         visited = set()
         path = [current_cell]
 
@@ -35,21 +51,18 @@ class WallFollowingMazeSolver(MazeSolver):
                 break
 
             found_path = False
-            attempts = 0
-            while attempts < len(directions):
-                next_dir = directions[current_dir_index]
+            for dir_index in right_wall_dirs(current_dir):
+                next_dir = directions[dir_index]
                 next_cell = current_cell + next_dir
 
                 # Check if the next cell is an exit or a valid step
                 if (next_cell in maze.getExits() or 
-                    (not maze.hasWall(current_cell, next_cell) and next_cell not in visited and maze.hasCell(next_cell))):
+                    (maze.hasCell(next_cell) and not maze.hasWall(current_cell, next_cell) and next_cell not in visited)):
                     current_cell = next_cell
+                    current_dir = next_dir
                     path.append(current_cell)
                     found_path = True
                     break
-                else:
-                    current_dir_index = (current_dir_index + 1) % len(directions)
-                    attempts += 1
 
             if not found_path:
                 path.pop()  # Remove current position
@@ -58,5 +71,4 @@ class WallFollowingMazeSolver(MazeSolver):
                 self.solverPathAppend(current_cell, True)
 
         self.solved(entrance, current_cell)
-
 
