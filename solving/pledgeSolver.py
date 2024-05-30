@@ -1,6 +1,8 @@
+from typing import List, Tuple
 from maze.maze3D import Maze3D
 from solving.mazeSolver import MazeSolver
 from maze.util import Coordinates3D
+import random
 
 class PledgeMazeSolver(MazeSolver):
     """
@@ -30,54 +32,44 @@ class PledgeMazeSolver(MazeSolver):
         def is_within_bounds(cell):
             return maze.hasCell(cell)
 
-        def turn_left():
-            nonlocal current_direction_index, angle
-            current_direction_index = (current_direction_index - 1) % len(directions)
-            angle += 90
-
-        def turn_right():
-            nonlocal current_direction_index, angle
-            current_direction_index = (current_direction_index + 1) % len(directions)
-            angle -= 90
-
-        def move_forward():
-            nonlocal current_cell
-            next_cell = current_cell + directions[current_direction_index]
-            if is_within_bounds(next_cell) and not maze.hasWall(current_cell, next_cell):
-                current_cell = next_cell
-                path.append(current_cell)
-                return True
-            return False
-
         while True:
-            if current_cell in maze.getExits() and current_cell != entrance:
-                self.solverPathAppend(current_cell, True)
-                self.solved(entrance, current_cell)
-                return
-
-            if current_cell not in visited:
+            if is_within_bounds(current_cell):
                 visited.add(current_cell)
                 self.solverPathAppend(current_cell, False)
 
-            if move_forward():
-                angle = 0  # Reset angle when moving forward without obstacles
+            if current_cell in maze.getExits():
+                self.solverPathAppend(current_cell, True)
+                break
+
+            next_cell = current_cell + directions[current_direction_index]
+
+            if is_within_bounds(next_cell) and not maze.hasWall(current_cell, next_cell) and next_cell not in visited:
+                current_cell = next_cell
+                path.append(current_cell)
+                visited.add(current_cell)
+                self.solverPathAppend(current_cell, False)
+                angle = 0  # Reset angle when a valid move is found
             else:
-                turn_left()  # Start with a left turn if unable to move forward
+                found_path = False
+                for _ in range(len(directions)):
+                    current_direction_index = (current_direction_index + 1) % len(directions)
+                    next_cell = current_cell + directions[current_direction_index]
 
-            while angle != 0:
-                if move_forward():
-                    break  # Exit the while loop if we can move forward
-                turn_right()  # Turn right if unable to move forward
+                    if is_within_bounds(next_cell) and not maze.hasWall(current_cell, next_cell) and next_cell not in visited:
+                        current_cell = next_cell
+                        path.append(current_cell)
+                        visited.add(current_cell)
+                        self.solverPathAppend(current_cell, False)
+                        found_path = True
+                        break
 
-            # Prevent getting stuck in a loop or revisiting the entrance unnecessarily
-            if not move_forward() and angle == 0:
-                if len(path) > 1:
-                    path.pop()
-                    current_cell = path[-1]
-                else:
-                    self.m_solved = False
-                    return
+                if not found_path:
+                    if len(path) > 1:
+                        path.pop()
+                        current_cell = path[-1]
+                    else:
+                        self.m_solved = False
+                        return
 
-        # Ensure the solver path is appended correctly
-        path.append(current_cell)
+        self.solved(entrance, current_cell)
 

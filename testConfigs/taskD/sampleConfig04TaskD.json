@@ -1,9 +1,9 @@
 {
     "levelSpecs": [[5,5],[7,7],[5,7]],
-    "entrances": [[0,0,-1],[1,-1,1]],
+    "entrances": [[0,0,-1],[1,-1,1],[2,5,5],[1,2,7]],
     "exits": [[0,5,1]],
     "generator": "taskD",
-    "solver": "wall",
+    "solver": "pledge",
     "solverEntranceIndex": 0,
     "visualise": true
 }
