@@ -15,7 +15,7 @@ class Directions(Enum):
     """
     Convention is (level, row, col) for constructing 3D Coordinates
     Enums for level, row, and col
-    Has directions: North, North-East, East, South, South-West, West
+    Has directions: North, East, South, West, Up, Down
     """
     NORTH = Coordinates3D(0, 1, 0)
     EAST = Coordinates3D(0, 0, 1)
@@ -154,14 +154,14 @@ class PledgeMazeSolver(MazeSolver):
         """
         level, row, col = entrance.getLevel(), entrance.getRow(), entrance.getCol()
 
-        # Check if the entrance is outside the maze bounds
-        if maze.hasCell(Coordinates3D(level, row, col + 1)):
+        # Check the position relative to the maze boundaries to determine the direction
+        if col < 0:  # Entrance is to the left of the maze
             return 1  # Move East
-        elif maze.hasCell(Coordinates3D(level, row, col - 1)):
+        elif col >= maze.colNum(level):  # Entrance is to the right of the maze
             return 3  # Move West
-        elif maze.hasCell(Coordinates3D(level, row + 1, col)):
+        elif row < 0:  # Entrance is below the maze
             return 0  # Move North
-        elif maze.hasCell(Coordinates3D(level, row - 1, col)):
+        elif row >= maze.rowNum(level):  # Entrance is above the maze
             return 2  # Move South
         
         raise ValueError("Entrance is not valid")
