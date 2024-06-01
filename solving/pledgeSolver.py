@@ -18,11 +18,11 @@ class Directions(Enum):
     Has directions: North, North-East, East, South, South-West, West
     """
     NORTH = Coordinates3D(0, 1, 0)
-    NORTH_EAST = Coordinates3D(1, 0, 0)  # Up
     EAST = Coordinates3D(0, 0, 1)
     SOUTH = Coordinates3D(0, -1, 0)
-    SOUTH_WEST = Coordinates3D(-1, 0, 0)  # Down
     WEST = Coordinates3D(0, 0, -1)
+    UP = Coordinates3D(1, 0, 0)
+    DOWN = Coordinates3D(-1, 0, 0)
 
     def getValue(self) -> Coordinates3D:
         """
@@ -92,7 +92,7 @@ class PledgeMazeSolver(MazeSolver):
         ]
 
         current_cell = entrance
-        current_direction_index = 0  # Start with a fixed direction (North)
+        current_direction_index = self.getInitialDirectionIndex(entrance, maze)
         angle = 0
         visited = set()
         path = [current_cell]
@@ -147,4 +147,22 @@ class PledgeMazeSolver(MazeSolver):
                         return
 
         self.solved(entrance, current_cell)
+
+    def getInitialDirectionIndex(self, entrance, maze):
+        """
+        Determines the initial direction index to move into the maze based on the entrance position.
+        """
+        level, row, col = entrance.getLevel(), entrance.getRow(), entrance.getCol()
+
+        # Check if the entrance is outside the maze bounds
+        if maze.hasCell(Coordinates3D(level, row, col + 1)):
+            return 1  # Move East
+        elif maze.hasCell(Coordinates3D(level, row, col - 1)):
+            return 3  # Move West
+        elif maze.hasCell(Coordinates3D(level, row + 1, col)):
+            return 0  # Move North
+        elif maze.hasCell(Coordinates3D(level, row - 1, col)):
+            return 2  # Move South
+        
+        raise ValueError("Entrance is not valid")
 
