@@ -72,7 +72,7 @@ class Directions(Enum):
         return directions[next_index]
 
     # Function used to get the direction after entering a boundary space
-    def getDirection(srcCell, destCell):
+    def getDirection(self, srcCell, destCell):
         """
         Return direction enum between based on a source cell and destination cell that are adjacent
         """
