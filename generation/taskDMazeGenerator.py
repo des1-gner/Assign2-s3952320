@@ -62,6 +62,9 @@ class TaskDMazeGenerator(MazeGenerator):
         # Fill in the rest of the maze
         self.fillMaze(maze, visited)
 
+        # Ensure boundaries are intact
+        self.fixBoundaries(maze)
+
         # Update maze generated
         self.m_mazeGenerated = True
 
@@ -91,4 +94,19 @@ class TaskDMazeGenerator(MazeGenerator):
                 maze.removeWall(currCell, neigh)
                 stack.append(neigh)
                 visited.add(neigh)
+
+    def fixBoundaries(self, maze):
+        for level in range(maze.levelNum()):
+            for row in range(maze.rowNum(level)):
+                for col in range(maze.colNum(level)):
+                    cell = Coordinates3D(level, row, col)
+                    if cell not in [Coordinates3D(0, 0, -1), Coordinates3D(1, -1, 1), Coordinates3D(0, 5, 1)]:
+                        if row == 0:
+                            maze.addWall(cell, Coordinates3D(level, row - 1, col))
+                        if row == maze.rowNum(level) - 1:
+                            maze.addWall(cell, Coordinates3D(level, row + 1, col))
+                        if col == 0:
+                            maze.addWall(cell, Coordinates3D(level, row, col - 1))
+                        if col == maze.colNum(level) - 1:
+                            maze.addWall(cell, Coordinates3D(level, row, col + 1))
 
