@@ -1,9 +1,11 @@
 {
   "levelSpecs": [[5,5],[5,5],[5,5]],
-  "entrances": [[0,0,5],[1,5,0]],
+  "entrances": [[0,-1,4],[1,5,0]],
   "exits": [[1,0,5],[2,0,5]],
   "generator": "recur",
   "solver": "bfs",
-  "visualise": true
+  "solverEntranceIndex": 0,
+  "visualise": true,
+  "randSeed": 42
 }
 

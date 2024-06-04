@@ -103,11 +103,10 @@ class PledgeMazeSolver(MazeSolver):
         def is_valid_move(current, next_cell):
             return is_within_bounds(next_cell) and not maze.hasWall(current, next_cell) and next_cell not in visited and next_cell not in maze.getEntrances()
 
-        while True:
-            if is_within_bounds(current_cell):
-                visited.add(current_cell)
-                self.solverPathAppend(current_cell, False)
+        visited.add(current_cell)  # Add entrance to visited at the beginning
+        self.solverPathAppend(current_cell, False)  # Mark the entrance in the solver path
 
+        while True:
             if current_cell in maze.getExits():
                 self.solverPathAppend(current_cell, True)
                 break
@@ -117,7 +116,7 @@ class PledgeMazeSolver(MazeSolver):
             if is_valid_move(current_cell, next_cell):
                 current_cell = next_cell
                 path.append(current_cell)
-                visited.add(current_cell)
+                visited.add(current_cell)  # Add to visited when a valid move is found
                 self.solverPathAppend(current_cell, False)
                 angle = 0  # Reset angle when a valid move is found
             else:
@@ -133,7 +132,7 @@ class PledgeMazeSolver(MazeSolver):
                     if is_valid_move(current_cell, next_cell):
                         current_cell = next_cell
                         path.append(current_cell)
-                        visited.add(current_cell)
+                        visited.add(current_cell)  # Add to visited when a valid move is found
                         self.solverPathAppend(current_cell, False)
                         found_path = True
                         break

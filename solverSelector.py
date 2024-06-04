@@ -12,6 +12,7 @@ from solving.recurBackMazeSolver import RecurBackMazeSolver
 from solving.wallFollowingSolver import WallFollowingMazeSolver
 from solving.pledgeSolver import PledgeMazeSolver
 from solving.taskCMazeSolver import TaskCMazeSolver
+from solving.multiBFSMazeSolver import MultiBFSMazeSolver
 from solving.mazeSolver import MazeSolver
 
 
@@ -40,6 +41,8 @@ class SolverSelector:
             solver = PledgeMazeSolver()
         elif solverApproach == 'taskC':
             solver = TaskCMazeSolver()
+        elif solverApproach == 'bfs':
+       	    solver = MultiBFSMazeSolver()
         # TODO: If you implement other solvers, you can add them here
 
         return solver

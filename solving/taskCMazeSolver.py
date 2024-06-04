@@ -13,7 +13,7 @@ class TaskCMazeSolver(MazeSolver):
         super().__init__()
         self.m_name = "taskC"
 
-    def solveMaze(self, maze: Maze3D):
+    def solveMaze(self, maze: Maze3D, entrance: Coordinates3D = None):
         """
         solve the maze, used by Task C.
         This version of solveMaze does not provide a starting entrance, and as part of the solution, the method should
@@ -61,7 +61,7 @@ class TaskCMazeSolver(MazeSolver):
         while queue:
             current_cell = queue.popleft()
             explored_cells_count[entrance] += 1
-            if current_cell in maze.m_exit:  # Adjusted to check for exits correctly
+            if current_cell in maze.getExits():  # Adjusted to check for exits correctly
                 exits.append(current_cell)
             for direction in [Coordinates3D(0, 1, 0), Coordinates3D(0, 0, 1), Coordinates3D(0, -1, 0), Coordinates3D(0, 0, -1), Coordinates3D(1, 0, 0), Coordinates3D(-1, 0, 0)]:
                 next_cell = current_cell + direction
