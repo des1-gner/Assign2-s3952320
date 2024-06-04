@@ -1,12 +1,15 @@
 # -------------------------------------------------------------------
 # Implementation of Task D maze generator.
 #
-# __author__ = 'Jeffrey Chan'
+# __author__ = 'Jeffrey Chan', 'Oisin Aeonn'
 # __copyright__ = 'Copyright 2024, RMIT University'
 # -------------------------------------------------------------------
 
+# Import Libraries
+
 from random import choice
 from collections import deque
+
 from maze.maze3D import Maze3D
 from maze.util import Coordinates3D
 from generation.mazeGenerator import MazeGenerator
