@@ -1,0 +1,11 @@
+{
+  "levelSpecs": [[5,5],[5,5],[5,5]],
+  "entrances": [[0,-1,4],[1,-1,0]],
+  "exits": [[1,2,5],[2,5,0]],
+  "generator": "wilson",
+  "solver": "wall",
+  "solverEntranceIndex": 1,
+  "visualise": true,
+  "randSeed": 42
+}
+

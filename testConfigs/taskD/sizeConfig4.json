@@ -1,0 +1,11 @@
+{
+  "levelSpecs": [[10,10],[10,10],[10,10],[10,10],[10,10],[10,10]],
+  "entrances": [[0,-1,4],[1,-1,0]],
+  "exits": [[4,2,10],[5,10,0]],
+  "generator": "taskD",
+  "solver": "recur",
+  "solverEntranceIndex": 0,
+  "visualise": true,
+  "randSeed": 42
+}
+
