@@ -98,7 +98,6 @@ class WallFollowingMazeSolver(MazeSolver):
         self.m_name = "wall"
 
     def solveMaze(self, maze: Maze3D, entrance: Coordinates3D):
-        # TODO: Implement this for task B!
         self.m_solved = False
         startCoord: Coordinates3D = entrance
 
@@ -110,15 +109,20 @@ class WallFollowingMazeSolver(MazeSolver):
         # Beginning direction of algorithm
         currDirection: Directions = BEGINNING_DIRECTION
 
+        # Use a set to store unique cells
+        visitedCells = set()
+
         # Begin algorithm
         while currCell not in maze.getExits():
             # append cell visited by algorithm
-            self.solverPathAppend(currCell)
+            if currCell not in visitedCells:
+                self.solverPathAppend(currCell)
+                visitedCells.add(currCell)
 
             # Get list of neighbours
             neighbours: list[Coordinates3D] = maze.neighbours(currCell)
 
-            # Neighbours that can be visited (non walls)
+            # Neighbours that can be visited (non-walls)
             possibleNeighs: list[Coordinates3D] = [
                 neigh
                 for neigh in neighbours
@@ -146,3 +150,7 @@ class WallFollowingMazeSolver(MazeSolver):
             # append exit cell to solverPath
             self.solverPathAppend(currCell)
             self.solved(entrance, currCell)
+
+        # Assign unique visited cells to the explored cells metric
+        self.m_exploredCells = len(visitedCells)
+
