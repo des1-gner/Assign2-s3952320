@@ -3,8 +3,8 @@
   "entrances": [[0,-1,4],[1,-1,0]],
   "exits": [[3,2,8],[4,8,0]],
   "generator": "taskD",
-  "solver": "pledge",
-  "solverEntranceIndex": 0,
+  "solver": "taskC",
+  "solverEntranceIndex": 1,
   "visualise": true,
   "randSeed": 42
 }

@@ -2,9 +2,10 @@
   "levelSpecs": [[10,10],[10,10],[10,10],[10,10],[10,10],[10,10]],
   "entrances": [[0,-1,4],[1,-1,0]],
   "exits": [[4,2,10],[5,10,0]],
-  "generator": "recur",
-  "solver": "wall",
-  "solverEntranceIndex": 0,
-  "visualise": true
+  "generator": "taskD",
+  "solver": "taskC",
+  "solverEntranceIndex": 1,
+  "visualise": true,
+   "randSeed": 58
 }
 
