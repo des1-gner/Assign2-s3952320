@@ -3,7 +3,7 @@
   "entrances": [[0,-1,4],[1,-1,0]],
   "exits": [[1,2,5],[2,5,0]],
   "generator": "taskD",
-  "solver": "taskC",
+  "solver": "tremaux",
   "solverEntranceIndex": 1,
   "visualise": true,
   "randSeed": 43

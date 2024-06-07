@@ -3,9 +3,9 @@
   "entrances": [[0,-1,4],[1,-1,0]],
   "exits": [[3,2,8],[4,8,0]],
   "generator": "taskD",
-  "solver": "taskC",
-  "solverEntranceIndex": 1,
+  "solver": "tremaux",
+  "solverEntranceIndex": 0,
   "visualise": true,
-  "randSeed": 42
+  "randSeed": 5254
 }
 

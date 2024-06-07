@@ -13,6 +13,7 @@ from solving.wallFollowingSolver import WallFollowingMazeSolver
 from solving.pledgeSolver import PledgeMazeSolver
 from solving.taskCMazeSolver import TaskCMazeSolver
 from solving.dijkstraMazeSolver import DijkstraMazeSolver
+from solving.tremauxMazeSolver import TremauxMazeSolver
 from solving.mazeSolver import MazeSolver
 
 
@@ -43,6 +44,8 @@ class SolverSelector:
             solver = TaskCMazeSolver()
         elif solverApproach == 'dij':
        	    solver = DijkstraMazeSolver()
+       	elif solverApproach == 'tremaux':
+       	    solver = TremauxMazeSolver()
         # TODO: If you implement other solvers, you can add them here
 
         return solver
